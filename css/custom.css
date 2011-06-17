@@ -1,0 +1,61 @@
+/*********************/
+/****   GENERAL   ****/
+/*********************/
+
+
+
+/*********************/
+/****    BODY     ****/
+/*********************/
+body {
+  background-color: #EEE;
+}
+
+div#wrap {
+  background-color: white;
+  padding: 20px;
+  border-left: 1px solid #CCC;
+  border-right: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+}
+
+/***********************/
+/****     Posts     ****/
+/***********************/
+div#posts div {
+  background-color: #FFD200;
+  border: 1px solid #BFA630;
+  padding: 5px;
+  padding-left: 8px;
+  margin-bottom: 5px;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+div#posts div.self {
+  background-color: #FFAA00;
+  border: 1px solid #BF8F30;
+}
+
+input#post-input {
+  font-size: 15px;
+  padding: 5px;
+  width: 100%;
+}
+
+/***********************/
+/****   Sidebar     ****/
+/***********************/
+div#name {
+  margin-bottom: 20px;
+}
+
+div#name input {
+  font-size: 14px;
+}
+
+input#share-link {
+  text-align: center;
+  width: 100%;
+}

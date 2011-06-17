@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <title>OneSheet Prototype!!</title>
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="/css/blueprint/screen.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/css/blueprint/print.css" media="print" rel="stylesheet" type="text/css" />
+    <!--[if lt IE 8]><link href="/css/blueprint/ie.css" media="screen" rel="stylesheet" type="text/css" ><![endif]-->
+    <link href="/css/custom.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="http://onesheet.brandonkliu.com:8125/nowjs/now.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script src="http://onesheet.brandonkliu.com/js/jquery.cookie.js"></script>
+    <script src="http://onesheet.brandonkliu.com/js/jquery-fieldselection.js"></script>
+    <script>
+      var numPosts = 0;
+      now.ready(function() {
+        if ($.cookie("onesheet_clientId")) {
+          now.clientId = $.cookie("onesheet_clientId");
+        }
+        else {
+          now.clientId = Math.floor(Math.random() * 10000000);
+          $.cookie("onesheet_clientId", now.clientId);
+        }
+
+        var idRegex = /brandonkliu\.com\/([^\/]+)$/;
+        var matches = idRegex.exec(location.href);
+        if (!matches) {
+          now.createNewNote();
+        }
+        else {
+          console.log("now at id " + matches[1]);
+          now.noteId = matches[1];
+          now.initializeNote(now.clientId, now.noteId, numPosts);
+        }
+        now.name = $("div#name input").attr("value");
+    });
+
+    now.redirectToNewNote = function(noteId) {
+      location.href = "http://onesheet.brandonkliu.com/" + noteId;
+    }
+
+    function submitPost() {
+      var postInput = $("#post-input");
+      var postText = postInput.attr("value");
+      console.log("submitting " + postText);
+      postInput.attr("value", "");
+      var timeNow = new Date().getTime();
+      now.sendPost(now.clientId, now.name, postText, timeNow);
+      now.receivePost(now.name, postText, timeNow, true);
+    }
+
+    now.receivePost = function(name, text, time, isSelf) {
+      console.log("received " + text + " from " + name);
+      numPosts++;
+      var date = new Date();
+      date.setTime(time);
+      var timeStamp = date.toLocaleTimeString();
+      var time = $("<span>").addClass("right").addClass("quiet").append(timeStamp);
+      var post = $("<div>").append($("<b>").append(name + ": ")).append(text).append(time);
+      if (isSelf) {
+        post.addClass("self");
+      }
+      $("div#posts").append(post);
+    }
+
+    $(function() {
+      $("#post-input").bind('keypress', function(e) {
+        // console.log("received keycode " + e.keyCode);
+        if (e.keyCode === 13 && $("input#post-input").attr("value") !== "") {
+          submitPost();
+        }
+      });
+
+      $("div#name input").focusout(function(e) {
+        now.name = $("div#name input").attr("value");
+      });
+
+      $("input#share-link").attr("value", location.href);
+      $("input#share-link").click(function(e) {
+        var input = $("input#share-link");
+        input.setSelection(0, input.attr("value").length);
+      });
+      $("input#share-link").focusout(function(e) {
+        $("input#share-link").attr("value", location.href);
+      });
+    });
+
+    </script>
+  </head>
+
+  <body>
+    <div id="wrap" class="container">
+      <h1>Welcome to OneSheet!</h1>
+      <div class="span-16">
+        <p>Please start typing into the text box and press enter to post!</p>
+
+        <div id="posts"></div>
+        <input id="post-input" type="text" />
+      </div>
+      <div id="sidebar" class="span-7">
+        <div id="name">
+          <label>Name: </label>
+          <input type="text" value="Anonymous">
+        </div>
+        Share with your friends with the link below!
+        <input id="share-link" type="text"/>
+      </div>
+    </div>
+  </body>
+</html>
